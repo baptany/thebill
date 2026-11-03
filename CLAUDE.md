@@ -1,10 +1,15 @@
-# Wydatki: minimalistyczna aplikacja do śledzenia wydatków
+# thebill: minimalistyczna aplikacja do śledzenia wydatków
 
 PWA dla iPhone'a (instalowana przez Safari → „Do ekranu początkowego”), hostowana na GitHub Pages.
 
+## Ikona
+- Źródło: `icons/icon-1024.png` (PNG, 1024×1024, kwadrat bez przezroczystości i bez zaokrągleń, bo iOS zaokrągla sam).
+- Z niego powstają: `apple-touch-icon.png` 180×180 (iPhone), `icon-192.png`, `icon-512.png` i `icon-maskable-512.png` (znak w środkowych 80%).
+- Obecna ikona: „$” w foncie Michroma, biały na `#191919`.
+
 ## Zasady
 - Czysty HTML/CSS/JS, bez frameworków i bez kroku budowania. Pliki działają tak, jak leżą w repozytorium.
-- Dane tylko w telefonie: `localStorage`, klucz `wydatki.v1`. Bez serwera, logowania i bazy danych.
+- Dane tylko w telefonie: `localStorage`, klucz `wydatki.v1`. Nie zmieniaj go: nowy klucz ukryje zapisane dane. Bez serwera, logowania i bazy danych.
 - Kwoty zapisywane w groszach (liczby całkowite), waluta PLN, interfejs po polsku.
 - Ciemne tło `#191919`, białe napisy. Cały wygląd sterują zmienne CSS na początku `css/styles.css`; zmiany wyglądu (np. z Figmy) zaczynamy od nich.
 - Pola tekstowe mają co najmniej 16px, bo inaczej iOS przybliża stronę.

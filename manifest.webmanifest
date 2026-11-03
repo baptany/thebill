@@ -1,6 +1,6 @@
 {
-  "name": "Wydatki",
-  "short_name": "Wydatki",
+  "name": "thebill",
+  "short_name": "thebill",
   "description": "Minimalistyczne śledzenie wydatków",
   "lang": "pl",
   "start_url": "./",

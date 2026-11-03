@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '1.0.0'; // zmieniaj razem z VERSION w sw.js
+  var APP_VERSION = '1.1.0'; // zmieniaj razem z VERSION w sw.js
   var KEY = 'wydatki.v1';
   var DEFAULT_CATEGORIES = ['Jedzenie', 'Transport', 'Dom', 'Rozrywka', 'Inne'];
 
@@ -515,7 +515,7 @@
 
   $('exportJson').addEventListener('click', function () {
     var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    shareOrDownload(blob, 'wydatki-kopia-' + stamp() + '.json');
+    shareOrDownload(blob, 'thebill-kopia-' + stamp() + '.json');
   });
 
   $('exportCsv').addEventListener('click', function () {
@@ -528,7 +528,7 @@
       return r.map(function (v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(';');
     }).join('\r\n');
     // BOM, żeby Excel i Numbers poprawnie pokazały polskie znaki.
-    shareOrDownload(new Blob(['﻿' + csv], { type: 'text/csv' }), 'wydatki-' + stamp() + '.csv');
+    shareOrDownload(new Blob(['﻿' + csv], { type: 'text/csv' }), 'thebill-' + stamp() + '.csv');
   });
 
   $('importBtn').addEventListener('click', function () { $('importInput').value = ''; $('importInput').click(); });

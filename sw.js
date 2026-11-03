@@ -1,7 +1,7 @@
 // Service worker: aplikacja działa offline.
 // Po każdej zmianie w plikach podbij VERSION (i APP_VERSION w js/app.js),
 // wtedy telefon pobierze nową wersję przy następnym uruchomieniu.
-const VERSION = '1.0.0';
+const VERSION = '1.1.0';
 const APP_CACHE = 'wydatki-app-' + VERSION;
 const CDN_CACHE = 'wydatki-cdn-v1';
 
