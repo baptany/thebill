@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#191919">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Wydatki">
+  <meta name="format-detection" content="telephone=no">
+  <title>Wydatki</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <main class="app">
+    <header class="top">
+      <button class="icon-btn" id="prevMonth" aria-label="Poprzedni miesiąc">
+        <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <h1 id="monthLabel">—</h1>
+      <button class="icon-btn" id="nextMonth" aria-label="Następny miesiąc">
+        <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
+      <button class="icon-btn settings-btn" id="openSettings" aria-label="Ustawienia">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      </button>
+    </header>
+
+    <section class="summary">
+      <p class="label" id="totalLabel">Wydatki w miesiącu</p>
+      <p class="total" id="total">0,00 zł</p>
+      <ul class="breakdown" id="breakdown"></ul>
+    </section>
+
+    <section class="entries" id="entries"></section>
+  </main>
+
+  <footer class="actions">
+    <button class="btn btn-primary" id="photoBtn">
+      <svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+      Zdjęcie paragonu
+    </button>
+    <button class="btn btn-secondary" id="manualBtn" aria-label="Wpisz kwotę ręcznie">
+      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+    <input type="file" id="photoInput" accept="image/*" capture="environment" hidden>
+  </footer>
+
+  <!-- Arkusz: dodawanie wydatku -->
+  <div class="sheet" id="addSheet" role="dialog" aria-modal="true" aria-labelledby="addTitle" hidden>
+    <div class="sheet-backdrop" data-close></div>
+    <div class="sheet-panel">
+      <div class="sheet-head">
+        <button class="text-btn" data-close>Anuluj</button>
+        <span></span>
+        <span></span>
+      </div>
+
+      <div class="step" data-step="reading">
+        <img class="receipt-thumb" id="receiptThumb" alt="">
+        <p class="step-title">Odczytuję paragon…</p>
+        <div class="progress"><div class="progress-bar" id="ocrProgress"></div></div>
+        <p class="hint" id="ocrHint">Pierwsze odczytanie pobiera moduł OCR, to może chwilę potrwać.</p>
+      </div>
+
+      <div class="step" data-step="amount">
+        <p class="step-title" id="addTitle">Czy suma jest poprawna?</p>
+        <label class="amount-field">
+          <input id="amountInput" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00">
+          <span>zł</span>
+        </label>
+        <p class="hint" id="amountHint"></p>
+        <label class="date-field">
+          <span>Data</span>
+          <input id="addDate" type="datetime-local">
+        </label>
+        <div class="row-btns" id="confirmBtns">
+          <button class="btn btn-secondary" id="amountNo">Nie, poprawię</button>
+          <button class="btn btn-primary" id="amountYes">Tak</button>
+        </div>
+      </div>
+
+      <div class="step" data-step="category">
+        <p class="step-title">Kategoria</p>
+        <p class="hint" id="categoryAmount"></p>
+        <div class="cat-grid" id="categoryGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Arkusz: edycja wpisu -->
+  <div class="sheet" id="editSheet" role="dialog" aria-modal="true" aria-labelledby="editTitle" hidden>
+    <div class="sheet-backdrop" data-close></div>
+    <div class="sheet-panel">
+      <div class="sheet-head">
+        <button class="text-btn" data-close>Anuluj</button>
+        <p class="sheet-title" id="editTitle">Edycja</p>
+        <button class="text-btn strong" id="editSave">Zapisz</button>
+      </div>
+      <label class="amount-field">
+        <input id="editAmount" type="text" inputmode="decimal" autocomplete="off">
+        <span>zł</span>
+      </label>
+      <div class="chips" id="editCategories"></div>
+      <label class="date-field">
+        <span>Data</span>
+        <input id="editDate" type="datetime-local">
+      </label>
+      <button class="btn btn-danger" id="editDelete">Usuń wpis</button>
+    </div>
+  </div>
+
+  <!-- Arkusz: ustawienia -->
+  <div class="sheet" id="settingsSheet" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" hidden>
+    <div class="sheet-backdrop" data-close></div>
+    <div class="sheet-panel tall">
+      <div class="sheet-head">
+        <span></span>
+        <p class="sheet-title" id="settingsTitle">Ustawienia</p>
+        <button class="text-btn strong" data-close>Gotowe</button>
+      </div>
+
+      <h2>Kategorie</h2>
+      <ul class="cat-list" id="categoryList"></ul>
+      <form class="add-cat" id="addCategoryForm">
+        <input id="newCategory" type="text" placeholder="Nowa kategoria" maxlength="24" autocomplete="off">
+        <button class="btn btn-secondary" type="submit">Dodaj</button>
+      </form>
+
+      <h2>Kopia zapasowa</h2>
+      <p class="hint left">Dane są zapisane tylko na tym telefonie. Rób kopię co jakiś czas i zachowaj ją w Plikach lub iCloud.</p>
+      <div class="stack">
+        <button class="btn btn-secondary" id="exportJson">Zapisz kopię (JSON)</button>
+        <button class="btn btn-secondary" id="exportCsv">Eksportuj do arkusza (CSV)</button>
+        <button class="btn btn-secondary" id="importBtn">Wczytaj kopię</button>
+        <input type="file" id="importInput" accept="application/json,.json" hidden>
+      </div>
+      <p class="version">Wydatki · wersja <span id="appVersion"></span></p>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+    <span id="toastText"></span>
+    <button class="text-btn strong" id="toastAction" hidden></button>
+  </div>
+
+  <script src="js/parse.js"></script>
+  <script src="js/ocr.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
